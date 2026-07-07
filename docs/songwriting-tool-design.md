@@ -97,7 +97,9 @@ techniques:
 - **作曲 / 旋律**：
   - 基于规则 + 概率模型：用 `music21` 按和弦进行和节奏模板生成旋律骨架。
   - 基于模型：调用 **Magenta**（MusicVAE / MelodyRNN）、
-    **MuseNet 类模型**、或 Suno / Udio 等在线服务生成 demo。
+    **基于 Transformer 的符号音乐生成模型**（如 Music Transformer、
+    MMT、Anticipatory Music Transformer 等，用于多轨 MIDI 生成），
+    或 Suno / Udio 等在线服务生成 demo。
   - 本地开源可选：`MuseCoco`、`MusicGen`（Meta）用于伴奏/风格化生成。
 - **人机协作 UI**：允许用户**局部重写**（只改副歌 / 只换和弦 / 保留旋律
   改词），而不是每次全量生成。
@@ -123,6 +125,15 @@ techniques:
 | 存储 | SQLite（MVP）→ PostgreSQL；素材文件放对象存储（S3/MinIO） |
 | 任务队列 | 音频分析耗时，用 Celery / RQ + Redis 异步化 |
 | 部署 | Docker Compose 起步，后续 K8s |
+
+> **云 vs 本地的选择建议**：
+> - 优先**云端 API**（OpenAI / Anthropic 等）：迭代快、效果好、无需 GPU；
+>   适合文本类任务（歌词分析/生成）以及 MVP 阶段快速验证。
+>   代价是**按量付费**、有**网络延迟**、且用户数据会离开本地。
+> - 优先**本地部署**（Ollama / vLLM / MusicGen / Demucs 等）：
+>   适合**大文件音频**（上传/下载成本高）、**批量长任务**（成本敏感）、
+>   以及涉及**未发布作品**的隐私敏感场景。代价是需要 GPU、运维更重。
+> - 实操策略：**文本走云、音频走本地**；后期可给用户开关自行选择。
 
 ---
 
